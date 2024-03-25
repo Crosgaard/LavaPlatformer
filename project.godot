@@ -15,6 +15,10 @@ run/main_scene="res://Scenes/Levels/level.tscn"
 config/features=PackedStringArray("4.1", "Mobile")
 config/icon="res://icon.svg"
 
+[autoload]
+
+Globals="*res://Globals/globals.gd"
+
 [display]
 
 window/size/viewport_width=1920
@@ -68,6 +72,7 @@ shootfalse={
 
 2d_render/layer_1="TileMap"
 2d_render/layer_2="Player"
+2d_render/layer_3="Projectiles"
 2d_physics/layer_1="Players"
 2d_physics/layer_2="Projectiles"
 2d_physics/layer_3="Objects"
