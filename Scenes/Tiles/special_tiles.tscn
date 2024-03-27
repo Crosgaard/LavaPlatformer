@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://ql4bvmcvtk7"]
+
+[ext_resource type="Script" path="res://Scenes/Tiles/special_tiles.gd" id="1_us8fj"]
+
+[node name="SpecialTiles" type="AnimatableBody2D" groups=["SpecialTiles"]]
+collision_layer = 32
+collision_mask = 5
+script = ExtResource("1_us8fj")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="."]

@@ -1,0 +1,62 @@
+[gd_scene load_steps=9 format=3 uid="uid://dsor0ejg833wq"]
+
+[ext_resource type="PackedScene" uid="uid://ql4bvmcvtk7" path="res://Scenes/Tiles/special_tiles.tscn" id="1_n34t1"]
+[ext_resource type="Script" path="res://Scenes/Tiles/fall_tiles.gd" id="2_51n5w"]
+[ext_resource type="Texture2D" uid="uid://ce6x8kr3g7vmj" path="res://Graphics/Cwazy tiles/Wood slab.jpg" id="3_ij7e1"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xsds0"]
+size = Vector2(126, 30)
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_dheml"]
+polygon = PackedVector2Array(-63, -16, 63, -16, 63, 16, -63, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_iuqmr"]
+size = Vector2(126, 14)
+
+[sub_resource type="Animation" id="Animation_432lc"]
+resource_name = "Fall"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(),
+"transitions": PackedFloat32Array(),
+"update": 0,
+"values": []
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_wxf4v"]
+_data = {
+"Fall": SubResource("Animation_432lc")
+}
+
+[node name="FallTiles" instance=ExtResource("1_n34t1")]
+script = ExtResource("2_51n5w")
+acc = 0.2
+range = 200.0
+
+[node name="Sprite2D" parent="." index="0"]
+texture = ExtResource("3_ij7e1")
+
+[node name="CollisionShape2D" parent="." index="1"]
+shape = SubResource("RectangleShape2D_xsds0")
+
+[node name="LightOccluder2D" parent="." index="2"]
+occluder = SubResource("OccluderPolygon2D_dheml")
+
+[node name="Area2D" type="Area2D" parent="." index="3"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" index="0"]
+position = Vector2(0, -25)
+shape = SubResource("RectangleShape2D_iuqmr")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." index="4"]
+libraries = {
+"": SubResource("AnimationLibrary_wxf4v")
+}
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
+[connection signal="body_exited" from="Area2D" to="." method="_on_area_2d_body_exited"]

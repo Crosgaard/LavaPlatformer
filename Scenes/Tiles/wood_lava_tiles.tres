@@ -1,0 +1,25 @@
+[gd_resource type="ShaderMaterial" load_steps=5 format=3 uid="uid://dgqjv61kn7nxs"]
+
+[ext_resource type="Shader" path="res://Scenes/Tiles/wood_lava_tiles.gdshader" id="1_u5f0c"]
+[ext_resource type="Texture2D" uid="uid://c8vrx72mdbyga" path="res://Graphics/Cwazy tiles/Burning wood/flames.jpeg" id="2_arml0"]
+
+[sub_resource type="Gradient" id="Gradient_k55xv"]
+offsets = PackedFloat32Array(0, 0.195122, 0.292683, 0.658537)
+colors = PackedColorArray(0, 0, 0, 1, 0.740377, 0.233017, 0, 1, 1, 0.384314, 0.227451, 1, 1, 0.74902, 0.262745, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_8mpqs"]
+gradient = SubResource("Gradient_k55xv")
+
+[resource]
+resource_local_to_scene = true
+shader = ExtResource("1_u5f0c")
+shader_parameter/scroll = Vector2(0.2, 0.4)
+shader_parameter/scroll2 = Vector2(0.1, 0.3)
+shader_parameter/noiseScale1 = Vector2(1, 1)
+shader_parameter/noiseScale2 = Vector2(1, 1)
+shader_parameter/blur = 5.269
+shader_parameter/base_intensity = 0.548
+shader_parameter/intensity_factor = 2.006
+shader_parameter/progress = 0.0
+shader_parameter/NOISE_PATTERN = ExtResource("2_arml0")
+shader_parameter/TONE_MAPPING = SubResource("GradientTexture1D_8mpqs")

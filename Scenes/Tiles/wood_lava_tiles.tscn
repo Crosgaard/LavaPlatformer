@@ -1,0 +1,47 @@
+[gd_scene load_steps=9 format=3 uid="uid://cu8dkhocuep0q"]
+
+[ext_resource type="PackedScene" uid="uid://ql4bvmcvtk7" path="res://Scenes/Tiles/special_tiles.tscn" id="1_t4gor"]
+[ext_resource type="Texture2D" uid="uid://ce6x8kr3g7vmj" path="res://Graphics/Cwazy tiles/Wood slab.jpg" id="2_kr8b2"]
+[ext_resource type="Script" path="res://Scenes/Tiles/wood_lava_tiles.gd" id="2_w2f4v"]
+[ext_resource type="Material" uid="uid://dgqjv61kn7nxs" path="res://Scenes/Tiles/wood_lava_tiles.tres" id="4_la61g"]
+[ext_resource type="Texture2D" uid="uid://1naqssy5vq08" path="res://Graphics/Cwazy tiles/Burning wood/Wood slab - Copy.jpg" id="6_v6qx8"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qchxx"]
+size = Vector2(126, 32)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_c5mk7"]
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_ho00l"]
+polygon = PackedVector2Array(-63, -16, 63, -16, 63, 16, -63, 16)
+
+[node name="WoodLavaTiles" instance=ExtResource("1_t4gor")]
+collision_mask = 21
+script = ExtResource("2_w2f4v")
+
+[node name="Sprite2D" parent="." index="0"]
+texture = ExtResource("2_kr8b2")
+
+[node name="CollisionShape2D" parent="." index="1"]
+shape = SubResource("RectangleShape2D_qchxx")
+
+[node name="LavaShader" type="Sprite2D" parent="." index="2"]
+visible = false
+material = ExtResource("4_la61g")
+texture = ExtResource("6_v6qx8")
+
+[node name="SelfDestruct" type="Timer" parent="." index="3"]
+wait_time = 0.2
+
+[node name="Area2D" type="Area2D" parent="." index="4"]
+collision_layer = 32
+collision_mask = 17
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" index="0"]
+position = Vector2(0, 300)
+shape = SubResource("RectangleShape2D_c5mk7")
+
+[node name="LightOccluder2D" parent="." index="5"]
+occluder = SubResource("OccluderPolygon2D_ho00l")
+
+[connection signal="timeout" from="SelfDestruct" to="." method="_on_self_destruct_timeout"]
+[connection signal="area_entered" from="Area2D" to="." method="_on_area_2d_area_entered"]

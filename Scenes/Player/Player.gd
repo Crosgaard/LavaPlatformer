@@ -5,7 +5,7 @@ const SPEED = 250.0
 const JUMP_VELOCITY = -600.0
 
 # Signals
-signal arrow(pos, player1)
+signal arrow(pos, player1, power)
 
 # Exports
 @export var is_player1: bool = true
@@ -22,9 +22,18 @@ var dying: bool = false
 var in_lava: bool = false
 var dead: bool = false
 
+# Power-ups
+var power: bool = false
+var shield: bool = false
+var double_jump: bool = false
+var rapid_fire: bool = false
+var rapid_fire_max: int = 5
+var rapid_fire_current: int = 0
+
 # Objects
 var prev_look_dir: String = ""
 var look_dir: String
+var prev_collisions: Array
 
 # Physic
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
@@ -61,7 +70,7 @@ func _physics_process(delta):
 				prev_look_dir = look_dir
 		else:
 			velocity.x = move_toward(velocity.x, 0, (SPEED + speed_boost))
-
+	
 	if !dead:
 		move_and_slide()
 		anim()
@@ -94,10 +103,14 @@ func anim():
 func shoot():
 	can_shoot = false
 	$Timers/ArrowCooldown.start()
-	if is_player1:
-		arrow.emit($ArrowStartPositions/ASPtrue.global_position, true)
-	else:
-		arrow.emit($ArrowStartPositions/ASPfalse.global_position, false)
+	arrow.emit($ArrowStartPositions/ASPtrue.global_position, is_player1, power)
+	if rapid_fire:
+		if rapid_fire_current < rapid_fire_max:
+			shooting = true
+			rapid_fire_current += 1
+		else:
+			rapid_fire = false
+			rapid_fire_current = 0
 
 func hit():
 	if is_player1:

@@ -806,8 +806,8 @@ _data = {
 "start_jump_right": SubResource("Animation_fp2jh")
 }
 
-[node name="Player" type="CharacterBody2D"]
-collision_mask = 31
+[node name="Player" type="CharacterBody2D" groups=["Player"]]
+collision_mask = 63
 script = ExtResource("1_cpgfd")
 
 [node name="LightOccluder2D" type="LightOccluder2D" parent="."]
@@ -843,6 +843,8 @@ one_shot = true
 
 [node name="HitShader" type="Timer" parent="Timers"]
 wait_time = 0.25
+
+[node name="ArrowRapidFire" type="Timer" parent="Timers"]
 
 [node name="ArrowStartPositions" type="Node2D" parent="."]
 
