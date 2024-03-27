@@ -2,22 +2,33 @@ extends Area2D
 var available_options = ["rapid_fire", "power", "shield", "double_jump", "health"]
 var type = available_options[randi() % len(available_options)]
 
-var direction: Vector2
-var distance: int = randi_range(150, 250)
+# Colors
+var red  = Color(1., 0.2, 0.4)
+var yellow = Color(1., 1., 0.2)
+var purple = Color(0.6, 0.4, 1.)
+var blue = Color(0.1, 0.75, 1.)
+var green= Color(0.5, 1., 0.6)
 
 func _ready():
 	if type == "health":
-		$Sprite2D.modulate = Color(0.5, 0.2, 0.1)
+		$Sprite2D.modulate = red
+		$PointLight2D.color = red
 	elif type == "rapid_fire":
-		$Sprite2D.modulate = Color(0.7, 0.5, 0.4)
+		$Sprite2D.modulate = yellow
+		$PointLight2D.color = yellow
 	elif type == "power":
-		$Sprite2D.modulate = Color(0.3, 0.0, 0.7)
+		$Sprite2D.modulate = purple
+		$PointLight2D.color = purple
 	elif type == "shield":
-		$Sprite2D.modulate = Color(0.0, 0.0, 0.5)
+		$Sprite2D.modulate = blue
+		$PointLight2D.color = blue
 	elif type == "double_jump":
-		$Sprite2D.modulate = Color(0.3, 0.6, 0.2)
+		$Sprite2D.modulate = green
+		$PointLight2D.color = green
+	$AnimationPlayer.play("animate")
 
 func _on_body_entered(body):
+	print(body.name)
 	if body.is_in_group("Player"):
 		var is_p1 = body.is_player1
 		if type == "health":
@@ -26,7 +37,11 @@ func _on_body_entered(body):
 			else:
 				Globals.health_p2 += 1
 		elif type == "rapid_fire":
-			Globals.laser_amount += 5
-		elif type == "grenade":
-			Globals.grenade_amount += 2
+			body.rapid_fire = true
+		elif type == "power":
+			body.power = true
+		elif type == "shield":
+			body.shield = true
+		elif type == "double_jump":
+			body.double_jump = true
 		queue_free()

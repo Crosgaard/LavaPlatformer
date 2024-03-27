@@ -27,7 +27,7 @@ var power: bool = false
 var shield: bool = false
 var double_jump: bool = false
 var rapid_fire: bool = false
-var rapid_fire_max: int = 5
+var rapid_fire_max: int = 3
 var rapid_fire_current: int = 0
 
 # Objects
@@ -55,9 +55,11 @@ func _physics_process(delta):
 		velocity.y += gravity * delta - (lava_gravity * delta * int(in_lava))
 	
 	if !dead && !dying:
-		if Input.is_action_pressed("jump" + str(is_player1)) and is_on_floor() and !shooting:
+		if Input.is_action_pressed("jump" + str(is_player1)) and (is_on_floor() || double_jump) and !shooting:
 			velocity.y = JUMP_VELOCITY
 			start_jump = true
+			if double_jump:
+				double_jump = false
 
 		var direction = Input.get_axis("left" + str(is_player1), "right" + str(is_player1))
 		if direction && !shooting:
@@ -103,22 +105,32 @@ func anim():
 func shoot():
 	can_shoot = false
 	$Timers/ArrowCooldown.start()
-	arrow.emit($ArrowStartPositions/ASPtrue.global_position, is_player1, power)
+	if is_player1:
+		arrow.emit($ArrowStartPositions/ASPtrue.global_position, is_player1, power)
+	else:
+		arrow.emit($ArrowStartPositions/ASPfalse.global_position, is_player1, power)
+	
+	if power:
+		power = false
+	
 	if rapid_fire:
-		if rapid_fire_current < rapid_fire_max:
+		if rapid_fire_current < rapid_fire_max - 1:
 			shooting = true
 			rapid_fire_current += 1
 		else:
 			rapid_fire = false
 			rapid_fire_current = 0
 
-func hit():
-	if is_player1:
-		Globals.health_p1 -= 1
+func hit(dmg):
+	if !shield:
+		if is_player1:
+			Globals.health_p1 -= dmg
+		else:
+			Globals.health_p2 -= dmg
+		$Sprite2D.material.set_shader_parameter("progress", 0.5)
+		$Timers/HitShader.start()
 	else:
-		Globals.health_p2 -= 1
-	$Sprite2D.material.set_shader_parameter("progress", 0.5)
-	$Timers/HitShader.start()
+		shield = false
 
 func player_dead(is_p1):
 	if (is_p1 == is_player1):

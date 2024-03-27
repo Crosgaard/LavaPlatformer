@@ -844,8 +844,6 @@ one_shot = true
 [node name="HitShader" type="Timer" parent="Timers"]
 wait_time = 0.25
 
-[node name="ArrowRapidFire" type="Timer" parent="Timers"]
-
 [node name="ArrowStartPositions" type="Node2D" parent="."]
 
 [node name="ASPtrue" type="Marker2D" parent="ArrowStartPositions"]
