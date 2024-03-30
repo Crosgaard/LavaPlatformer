@@ -7,14 +7,14 @@
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_8lb45"]
 polygon = PackedVector2Array(-64, -63, 64, -63, 64, 62, -64, 62)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_obh4t"]
+size = Vector2(75, 122)
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_fdbr1"]
 resource_local_to_scene = true
 shader = ExtResource("2_w0pmb")
-shader_parameter/color = Color(1, 0, 0, 1)
+shader_parameter/color = Color(0.4, 0.803922, 1, 1)
 shader_parameter/progress = 0.0
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_obh4t"]
-size = Vector2(75, 122)
 
 [sub_resource type="Animation" id="Animation_nku40"]
 length = 0.001
@@ -817,6 +817,12 @@ visibility_layer = 5
 occluder = SubResource("OccluderPolygon2D_8lb45")
 occluder_light_mask = 2
 
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+light_mask = 2
+visibility_layer = 3
+position = Vector2(0.5, 0)
+shape = SubResource("RectangleShape2D_obh4t")
+
 [node name="Sprite2D" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_fdbr1")
 position = Vector2(-3, -1)
@@ -824,12 +830,6 @@ scale = Vector2(3.90625, 3.84325)
 texture = ExtResource("2_ea42c")
 hframes = 8
 vframes = 8
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-light_mask = 2
-visibility_layer = 3
-position = Vector2(0.5, 0)
-shape = SubResource("RectangleShape2D_obh4t")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
@@ -844,6 +844,14 @@ one_shot = true
 [node name="HitShader" type="Timer" parent="Timers"]
 wait_time = 0.25
 
+[node name="DoubleJumpStop" type="Timer" parent="Timers"]
+wait_time = 3.0
+one_shot = true
+
+[node name="JumpCooldown" type="Timer" parent="Timers"]
+wait_time = 0.1
+one_shot = true
+
 [node name="ArrowStartPositions" type="Node2D" parent="."]
 
 [node name="ASPtrue" type="Marker2D" parent="ArrowStartPositions"]
@@ -855,3 +863,5 @@ position = Vector2(-83, -22)
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]
 [connection signal="timeout" from="Timers/ArrowCooldown" to="." method="_on_arrow_cooldown_timeout"]
 [connection signal="timeout" from="Timers/HitShader" to="." method="_on_hit_shader_timeout"]
+[connection signal="timeout" from="Timers/DoubleJumpStop" to="." method="_on_double_jump_stop_timeout"]
+[connection signal="timeout" from="Timers/JumpCooldown" to="." method="_on_jump_cooldown_timeout"]

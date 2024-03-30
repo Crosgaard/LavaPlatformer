@@ -12,7 +12,14 @@ signal arrow(pos, player1, power)
 
 # basics
 var health = 5
-var speed_boost = 00
+var speed_boost = 0
+var jump_count: int = 0
+var max_jump_count: int = 1
+var jump_timer: bool = false:
+	set(value):
+		jump_timer = value
+		if value:
+			$Timers/JumpCooldown.start()
 
 var shooting: bool = false
 var shooting_finish: bool = false
@@ -24,8 +31,20 @@ var dead: bool = false
 
 # Power-ups
 var power: bool = false
-var shield: bool = false
-var double_jump: bool = false
+var shield: bool = false:
+	set(value):
+		shield = value
+		shield_shader(value)
+var double_jump: bool = false:
+	set(value):
+		double_jump = value
+		if value:
+			max_jump_count = 2
+			$Timers/DoubleJumpStop.start()
+		else:
+			max_jump_count = 1
+		print(max_jump_count)
+
 var rapid_fire: bool = false
 var rapid_fire_max: int = 3
 var rapid_fire_current: int = 0
@@ -45,6 +64,7 @@ func _ready():
 	else:
 		look_dir = "left"
 	Globals.connect("player_dead", player_dead)
+	$Sprite2D.material.set_shader_parameter("progress", 0.0)
 
 func _physics_process(delta):
 	if is_on_floor() && Input.is_action_pressed("shoot" + str(is_player1)) && can_shoot:
@@ -53,13 +73,19 @@ func _physics_process(delta):
 	
 	if not is_on_floor():
 		velocity.y += gravity * delta - (lava_gravity * delta * int(in_lava))
+	else:
+		jump_count = 0
 	
 	if !dead && !dying:
-		if Input.is_action_pressed("jump" + str(is_player1)) and (is_on_floor() || double_jump) and !shooting:
+		if Input.is_action_pressed("jump" + str(is_player1)) and (jump_count < max_jump_count) and not jump_timer and not shooting:
 			velocity.y = JUMP_VELOCITY
 			start_jump = true
-			if double_jump:
-				double_jump = false
+			jump_count += 1
+			print("Jump count: " + str(jump_count))
+			print("Max jump count: " + str(max_jump_count))
+			if prev_look_dir == "":
+				prev_look_dir = look_dir
+			jump_timer = true
 
 		var direction = Input.get_axis("left" + str(is_player1), "right" + str(is_player1))
 		if direction && !shooting:
@@ -128,6 +154,7 @@ func hit(dmg):
 		else:
 			Globals.health_p2 -= dmg
 		$Sprite2D.material.set_shader_parameter("progress", 0.5)
+		$Sprite2D.material.set_shader_parameter("color", Color(255,0,0))
 		$Timers/HitShader.start()
 	else:
 		shield = false
@@ -141,6 +168,13 @@ func die():
 	if prev_look_dir == "":
 		prev_look_dir = look_dir
 	velocity.x = move_toward(velocity.x, 0, (SPEED + speed_boost))
+
+func shield_shader(value):
+	if value:
+		$Sprite2D.material.set_shader_parameter("color", Color(100,200,255))
+		$Sprite2D.material.set_shader_parameter("progress", 0.4)
+	else:
+		$Sprite2D.material.set_shader_parameter("progress", 0.0)
 
 func _on_animation_player_animation_finished(anim_name):
 	if anim_name == "start_jump_left" or anim_name == "start_jump_right":
@@ -161,3 +195,9 @@ func _on_arrow_cooldown_timeout():
 
 func _on_hit_shader_timeout():
 	$Sprite2D.material.set_shader_parameter("progress", 0)
+
+func _on_double_jump_stop_timeout():
+	double_jump = false
+
+func _on_jump_cooldown_timeout():
+	jump_timer = false

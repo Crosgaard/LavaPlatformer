@@ -3,13 +3,15 @@ extends Node
 signal stat_change
 signal player_dead(is_p1)
 
-var health_p1: int = 3:
+var max_health: int = 3
+
+var health_p1: int = max_health:
 	set(value):
 		health_p1 = change_health(value, true)
 		stat_change.emit()
 		print("player 1: " + str(health_p1))
 
-var health_p2: int = 3:
+var health_p2: int = max_health:
 	set(value):
 		health_p2 = change_health(value, false)
 		stat_change.emit()
@@ -18,4 +20,4 @@ var health_p2: int = 3:
 func change_health(value, player):
 	if value < 1:
 		player_dead.emit(player)
-	return value
+	return min(value, max_health)
