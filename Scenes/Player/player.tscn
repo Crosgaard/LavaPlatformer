@@ -13,7 +13,7 @@ size = Vector2(75, 122)
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_fdbr1"]
 resource_local_to_scene = true
 shader = ExtResource("2_w0pmb")
-shader_parameter/color = Color(0.4, 0.803922, 1, 1)
+shader_parameter/color = Color(0, 0.529412, 1, 1)
 shader_parameter/progress = 0.0
 
 [sub_resource type="Animation" id="Animation_nku40"]
@@ -849,7 +849,7 @@ wait_time = 3.0
 one_shot = true
 
 [node name="JumpCooldown" type="Timer" parent="Timers"]
-wait_time = 0.1
+wait_time = 0.2
 one_shot = true
 
 [node name="ArrowStartPositions" type="Node2D" parent="."]

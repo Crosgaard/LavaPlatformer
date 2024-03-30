@@ -28,7 +28,6 @@ func _ready():
 	$AnimationPlayer.play("animate")
 
 func _on_body_entered(body):
-	print(body.name)
 	if body.is_in_group("Player"):
 		var is_p1 = body.is_player1
 		if type == "health":
@@ -41,7 +40,10 @@ func _on_body_entered(body):
 		elif type == "power":
 			body.power = true
 		elif type == "shield":
-			body.shield = true
+			if is_p1:
+				Globals.shield_p1 = true
+			else:
+				Globals.shield_p2 = true
 		elif type == "double_jump":
 			body.double_jump = true
 		queue_free()

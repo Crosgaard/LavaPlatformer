@@ -1,4 +1,4 @@
-[gd_scene load_steps=46 format=3 uid="uid://cjqp026y4nmq6"]
+[gd_scene load_steps=47 format=3 uid="uid://cjqp026y4nmq6"]
 
 [ext_resource type="Script" path="res://Scenes/Levels/level.gd" id="1_1xyav"]
 [ext_resource type="Texture2D" uid="uid://dlqajphwssyn8" path="res://Graphics/tileset-cave.png" id="1_65cel"]
@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://mth0uig8s7qd" path="res://Scenes/Tiles/moving_platform.tscn" id="4_cueeu"]
 [ext_resource type="PackedScene" uid="uid://cu8dkhocuep0q" path="res://Scenes/Tiles/wood_lava_tiles.tscn" id="5_8kcw4"]
 [ext_resource type="PackedScene" uid="uid://c2n6w3u6xjvj" path="res://Scenes/Obtainables/item.tscn" id="6_mfg6j"]
+[ext_resource type="PackedScene" uid="uid://c74gnl6vxm22q" path="res://Scenes/User Interface/ui.tscn" id="11_kiykd"]
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_qxuy2"]
 polygon = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
@@ -1863,7 +1864,7 @@ physics_layer_0/collision_mask = 33
 sources/0 = SubResource("TileSetAtlasSource_g07xe")
 sources/1 = SubResource("TileSetAtlasSource_s8l8h")
 
-[sub_resource type="Curve2D" id="Curve2D_gqe4e"]
+[sub_resource type="Curve2D" id="Curve2D_rb0kj"]
 resource_local_to_scene = true
 _data = {
 "points": PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 900, 0)
@@ -1952,7 +1953,7 @@ scale = Vector2(0.38, 0.38)
 
 [node name="MovingPlatform" parent="Background/SpecialTilesNode" instance=ExtResource("4_cueeu")]
 position = Vector2(-1757.9, -118.421)
-curve = SubResource("Curve2D_gqe4e")
+curve = SubResource("Curve2D_rb0kj")
 
 [node name="WoodLavaTiles" parent="Background/SpecialTilesNode" instance=ExtResource("5_8kcw4")]
 position = Vector2(-1802.63, 900)
@@ -1965,14 +1966,19 @@ range = 352.0
 metadata/_edit_lock_ = true
 
 [node name="Item" parent="Items" instance=ExtResource("6_mfg6j")]
+position = Vector2(515, 410)
 
 [node name="Item2" parent="Items" instance=ExtResource("6_mfg6j")]
+position = Vector2(597, 121)
 
 [node name="Item3" parent="Items" instance=ExtResource("6_mfg6j")]
+position = Vector2(554, 216)
 
 [node name="Item4" parent="Items" instance=ExtResource("6_mfg6j")]
+position = Vector2(648, 263)
 
 [node name="Item5" parent="Items" instance=ExtResource("6_mfg6j")]
+position = Vector2(745, 312)
 
 [node name="Item6" parent="Items" instance=ExtResource("6_mfg6j")]
 position = Vector2(-743, 318)
@@ -2065,6 +2071,8 @@ metadata/_edit_lock_ = true
 wait_time = 20.0
 one_shot = true
 autostart = true
+
+[node name="UI" parent="." instance=ExtResource("11_kiykd")]
 
 [connection signal="arrow" from="Players/Player1" to="." method="_on_player_1_arrow"]
 [connection signal="arrow" from="Players/Player2" to="." method="_on_player_1_arrow"]

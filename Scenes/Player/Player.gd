@@ -34,16 +34,24 @@ var power: bool = false
 var shield: bool = false:
 	set(value):
 		shield = value
-		shield_shader(value)
+		if value:
+			set_shield_shader()
+		else:
+			reset_shader()
+
 var double_jump: bool = false:
 	set(value):
 		double_jump = value
 		if value:
 			max_jump_count = 2
 			$Timers/DoubleJumpStop.start()
+			set_dj_shader()
 		else:
 			max_jump_count = 1
-		print(max_jump_count)
+			if !shield:
+				reset_shader()
+			else:
+				set_shield_shader()
 
 var rapid_fire: bool = false
 var rapid_fire_max: int = 3
@@ -64,6 +72,7 @@ func _ready():
 	else:
 		look_dir = "left"
 	Globals.connect("player_dead", player_dead)
+	Globals.connect("shield_change", update_shield)
 	$Sprite2D.material.set_shader_parameter("progress", 0.0)
 
 func _physics_process(delta):
@@ -103,6 +112,7 @@ func _physics_process(delta):
 		move_and_slide()
 		anim()
 
+# Animations
 func anim():
 	if dying:
 		$AnimationPlayer.play("die_" + prev_look_dir)
@@ -128,6 +138,22 @@ func anim():
 		else:
 			$AnimationPlayer.play("idle_" + look_dir)
 
+func _on_animation_player_animation_finished(anim_name):
+	if anim_name == "start_jump_left" or anim_name == "start_jump_right":
+		start_jump = false
+	elif anim_name == "shoot_left" or anim_name == "shoot_right":
+		shooting = false
+		shooting_finish = true
+		shoot()
+	elif anim_name== "shoot_left_finish" or anim_name == "shoot_right_finish":
+		shooting_finish = false
+	elif anim_name== "die_left" or anim_name == "die_right":
+		dead = true
+		dying = false
+		$Sprite2D.frame = 13
+
+
+# Shooting
 func shoot():
 	can_shoot = false
 	$Timers/ArrowCooldown.start()
@@ -154,11 +180,16 @@ func hit(dmg):
 		else:
 			Globals.health_p2 -= dmg
 		$Sprite2D.material.set_shader_parameter("progress", 0.5)
-		$Sprite2D.material.set_shader_parameter("color", Color(255,0,0))
+		$Sprite2D.material.set_shader_parameter("color", Vector4(1,0,0,1))
 		$Timers/HitShader.start()
 	else:
-		shield = false
+		if is_player1:
+			Globals.shield_p1 = false
+		else:
+			Globals.shield_p2 = false
 
+
+# Dying
 func player_dead(is_p1):
 	if (is_p1 == is_player1):
 		die()
@@ -169,32 +200,35 @@ func die():
 		prev_look_dir = look_dir
 	velocity.x = move_toward(velocity.x, 0, (SPEED + speed_boost))
 
-func shield_shader(value):
-	if value:
-		$Sprite2D.material.set_shader_parameter("color", Color(100,200,255))
-		$Sprite2D.material.set_shader_parameter("progress", 0.4)
-	else:
-		$Sprite2D.material.set_shader_parameter("progress", 0.0)
 
-func _on_animation_player_animation_finished(anim_name):
-	if anim_name == "start_jump_left" or anim_name == "start_jump_right":
-		start_jump = false
-	elif anim_name == "shoot_left" or anim_name == "shoot_right":
-		shooting = false
-		shooting_finish = true
-		shoot()
-	elif anim_name== "shoot_left_finish" or anim_name == "shoot_right_finish":
-		shooting_finish = false
-	elif anim_name== "die_left" or anim_name == "die_right":
-		dead = true
-		dying = false
-		$Sprite2D.frame = 13
+# Shield
+func update_shield(is_p1):
+	if is_p1 && is_player1:
+		shield = Globals.shield_p1
+	elif not is_p1 and not is_player1:
+		shield = Globals.shield_p2
 
+func set_shield_shader():
+	$Sprite2D.material.set_shader_parameter("color", Vector4(0,0.5,1,1))
+	$Sprite2D.material.set_shader_parameter("progress", 0.5)
+	#var tween = get_tree().create_tween()
+	#tween.tween_property($Sprite2D, "progress", 0.5, 0.2)
+	#tween.tween_property($Sprite2D, "progress", 0.5, 0.2)
+
+func set_dj_shader():
+	$Sprite2D.material.set_shader_parameter("progress", 0.5)
+	$Sprite2D.material.set_shader_parameter("color", Vector4(0.3,1,0.3,1))
+
+func reset_shader():
+	$Sprite2D.material.set_shader_parameter("progress", 0)
+
+
+# Timers
 func _on_arrow_cooldown_timeout():
 	can_shoot = true
 
 func _on_hit_shader_timeout():
-	$Sprite2D.material.set_shader_parameter("progress", 0)
+	reset_shader()
 
 func _on_double_jump_stop_timeout():
 	double_jump = false
