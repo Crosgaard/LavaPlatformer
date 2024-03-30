@@ -6,7 +6,7 @@
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_c1nlb"]
 radius = 2.0
-height = 4.0
+height = 16.0
 
 [node name="Arrow" type="Area2D"]
 scale = Vector2(1.5, 1.5)
@@ -29,7 +29,7 @@ texture = ExtResource("3_45x2p")
 texture_scale = 0.05
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(12, 0)
+position = Vector2(7.33333, 0)
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_c1nlb")
 

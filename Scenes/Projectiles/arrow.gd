@@ -8,11 +8,11 @@ var power: bool = false
 func _ready():
 	$SelfDestructTimer.start()
 
-func _process(delta):
+func _physics_process(delta):
 	position += direction * speed * delta 
 
 func _on_body_entered(body):
-	if "hit" in body:
+	if "hit" in body and !(body.dying || body.dead):
 		body.hit(dmg + dmg * int(power))
 	queue_free()
 
