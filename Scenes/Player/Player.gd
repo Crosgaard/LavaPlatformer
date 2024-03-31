@@ -50,7 +50,7 @@ var double_jump: bool = false:
 			set_shader_frame()
 		else:
 			max_jump_count = 1
-			if !shield:
+			if not shield:
 				reset_shader()
 			else:
 				set_shield_shader()
