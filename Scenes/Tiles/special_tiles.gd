@@ -1,2 +1,1 @@
-extends AnimatableBody2D
-class_name SpecialTiles
+class_name SpecialTiles extends AnimatableBody2D

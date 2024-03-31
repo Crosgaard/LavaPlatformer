@@ -1,9 +1,9 @@
 extends Path2D
 
-@export var speed_scale = 1.
+@export var speed_scale: float = 1.0
 
-@onready var animation = $AnimationPlayer
+@onready var animator: AnimationPlayer = $AnimationPlayer
 
-func _ready():
-	animation.play("Move")
-	animation.speed_scale = speed_scale
+func _ready() -> void:
+	animator.play("Move")
+	animator.speed_scale = speed_scale

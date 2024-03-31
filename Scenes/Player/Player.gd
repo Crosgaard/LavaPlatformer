@@ -1,19 +1,17 @@
-extends CharacterBody2D
-
-# Constants
-const SPEED = 250.0
-const JUMP_VELOCITY = -600.0
+class_name Player extends CharacterBody2D
 
 # Signals
-signal arrow(pos, player1, power)
-signal player_has_died(is_p1)
+signal arrow(pos: Vector2, is_p1: bool, power: bool)
+signal player_has_died(is_p1: bool)
+
+# Constants
+const SPEED: float = 250.0
+const JUMP_VELOCITY: float = -600.0
 
 # Exports
 @export var is_player1: bool = true
 
-# basics
-var health = 5
-var speed_boost = 0
+# Basics
 var jump_count: int = 0
 var max_jump_count: int = 1
 var jump_timer: bool = false:
@@ -37,8 +35,10 @@ var shield: bool = false:
 		shield = value
 		if value:
 			set_shield_shader()
+			set_shader_frame()
 		else:
 			reset_shader()
+var frames_shader: int = 0
 
 var double_jump: bool = false:
 	set(value):
@@ -47,6 +47,7 @@ var double_jump: bool = false:
 			max_jump_count = 2
 			$Timers/DoubleJumpStop.start()
 			set_dj_shader()
+			set_shader_frame()
 		else:
 			max_jump_count = 1
 			if !shield:
@@ -67,18 +68,28 @@ var prev_collisions: Array
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 var lava_gravity = 500
 
-func _ready():
-	if is_player1:
-		look_dir = "right"
-	else:
-		look_dir = "left"
+# Onready
+@onready var animator: AnimationPlayer = $AnimationPlayer
+
+func _ready() -> void:
+	look_dir = "right" if is_player1 else "left"
 	Globals.connect("player_dead", player_dead)
 	Globals.connect("shield_change", update_shield)
 	$Sprite2D.material.set_shader_parameter("progress", 0.0)
 
-func _physics_process(delta):
-	if is_on_floor() && Input.is_action_pressed("shoot" + str(is_player1)) && can_shoot:
-		velocity.x = move_toward(velocity.x, 0, (SPEED + speed_boost))
+func _process(_delta: float) -> void:
+	if not dead:
+		if not dying and (double_jump or shield):
+			shader_process()
+		anim()
+
+func _physics_process(delta: float) -> void:
+	if (
+			is_on_floor() 
+			and Input.is_action_pressed("shoot" + str(is_player1)) 
+			and can_shoot
+	):
+		velocity.x = move_toward(velocity.x, 0, SPEED)
 		shooting = true
 	
 	if not is_on_floor():
@@ -86,69 +97,84 @@ func _physics_process(delta):
 	else:
 		jump_count = 0
 	
-	if !dead && !dying:
-		if Input.is_action_pressed("jump" + str(is_player1)) and (jump_count < max_jump_count) and not jump_timer and not shooting:
+	if not dead and not dying:
+		if (
+				Input.is_action_pressed("jump" + str(is_player1)) 
+				and (jump_count < max_jump_count) 
+				and not jump_timer 
+				and not shooting
+		):
 			velocity.y = JUMP_VELOCITY
 			start_jump = true
 			jump_count += 1
-			print("Jump count: " + str(jump_count))
-			print("Max jump count: " + str(max_jump_count))
-			if prev_look_dir == "":
-				prev_look_dir = look_dir
+			if prev_look_dir == "": prev_look_dir = look_dir
 			jump_timer = true
 
-		var direction = Input.get_axis("left" + str(is_player1), "right" + str(is_player1))
-		if direction && !shooting:
-			velocity.x = direction * (SPEED + speed_boost)
-			if direction < 0:
-				look_dir = "left"
-			else:
-				look_dir = "right"
-			if start_jump && prev_look_dir == "":
+		var direction: float = Input.get_axis("left" + str(is_player1), "right" + str(is_player1))
+		if direction and not shooting:
+			velocity.x = direction * SPEED
+			look_dir = "left" if direction < 0 else "right"
+			
+			if start_jump and prev_look_dir == "":
 				prev_look_dir = look_dir
 		else:
-			velocity.x = move_toward(velocity.x, 0, (SPEED + speed_boost))
+			velocity.x = move_toward(velocity.x, 0, SPEED)
 	
-	if !dead:
+	if not dead:
 		move_and_slide()
-		anim()
+
 
 # Animations
-func anim():
+func anim() -> void:
 	if dying:
-		$AnimationPlayer.play("die_" + prev_look_dir)
+		animator.play("die_" + prev_look_dir)
 	elif shooting:
 		if is_player1:
-			$AnimationPlayer.play("shoot_right")
+			animator.play("shoot_right")
 		else:
-			$AnimationPlayer.play("shoot_left")
+			animator.play("shoot_left")
 	elif shooting_finish:
 		if is_player1:
-			$AnimationPlayer.play("shoot_right_finish")
+			animator.play("shoot_right_finish")
 		else:
-			$AnimationPlayer.play("shoot_left_finish")
+			animator.play("shoot_left_finish")
 	elif start_jump:
-		$AnimationPlayer.play("start_jump_" + prev_look_dir)
+		animator.play("start_jump_" + prev_look_dir)
 	elif velocity.y < 0:
-		$AnimationPlayer.play("jump_" + look_dir)
+		animator.play("jump_" + look_dir)
 	elif velocity.y > 0:
-		$AnimationPlayer.play("fall_" + look_dir)
+		animator.play("fall_" + look_dir)
 	elif is_on_floor():
 		if velocity.x != 0:
-			$AnimationPlayer.play("run_" + look_dir)
+			animator.play("run_" + look_dir)
 		else:
-			$AnimationPlayer.play("idle_" + look_dir)
+			animator.play("idle_" + look_dir)
 
-func _on_animation_player_animation_finished(anim_name):
-	if anim_name == "start_jump_left" or anim_name == "start_jump_right":
+func _on_animation_player_animation_finished(anim_name: String) -> void:
+	if (
+			anim_name == "start_jump_left" 
+			or anim_name == "start_jump_right"
+	): 
 		start_jump = false
-	elif anim_name == "shoot_left" or anim_name == "shoot_right":
+		
+	elif (
+			anim_name == "shoot_left" 
+			or anim_name == "shoot_right"
+	): 
 		shooting = false
 		shooting_finish = true
 		shoot()
-	elif anim_name== "shoot_left_finish" or anim_name == "shoot_right_finish":
+		
+	elif (
+			anim_name == "shoot_left_finish" 
+			or anim_name == "shoot_right_finish"
+	):
 		shooting_finish = false
-	elif anim_name== "die_left" or anim_name == "die_right":
+		
+	elif (
+			anim_name == "die_left" 
+			or anim_name == "die_right"
+	):
 		dead = true
 		dying = false
 		$Sprite2D.frame = 13
@@ -156,7 +182,7 @@ func _on_animation_player_animation_finished(anim_name):
 
 
 # Shooting
-func shoot():
+func shoot() -> void:
 	can_shoot = false
 	$Timers/ArrowCooldown.start()
 	if is_player1:
@@ -175,8 +201,8 @@ func shoot():
 			rapid_fire = false
 			rapid_fire_current = 0
 
-func hit(dmg):
-	if !shield:
+func hit(dmg: int) -> void:
+	if not shield:
 		if is_player1:
 			Globals.health_p1 -= dmg
 		else:
@@ -192,45 +218,52 @@ func hit(dmg):
 
 
 # Dying
-func player_dead(is_p1):
-	if (is_p1 == is_player1):
+func player_dead(is_p1: bool) -> void:
+	if is_p1 == is_player1:
 		die()
 
-func die():
+func die() -> void:
 	dying = true
 	if prev_look_dir == "":
 		prev_look_dir = look_dir
-	velocity.x = move_toward(velocity.x, 0, (SPEED + speed_boost))
+	velocity.x = move_toward(velocity.x, 0, SPEED)
 
 
 # Shield
-func update_shield(is_p1):
-	if is_p1 && is_player1:
+func update_shield(is_p1: bool) -> void:
+	if is_p1 and is_player1:
 		shield = Globals.shield_p1
 	elif not is_p1 and not is_player1:
 		shield = Globals.shield_p2
 
-func set_shield_shader():
-	$Sprite2D.material.set_shader_parameter("color", Vector3(0,0,0.5))
-	$Sprite2D.material.set_shader_parameter("progress", 0.3)
 
-func set_dj_shader():
-	$Sprite2D.material.set_shader_parameter("progress", 0.5)
-	$Sprite2D.material.set_shader_parameter("color", Vector4(0.3,1,0.3,1))
+# Shaders
+func shader_process() -> void:
+	var frames: int = Engine.get_frames_drawn() - frames_shader
+	$Sprite2D.material.set_shader_parameter("progress", (1.0 + sin(frames*0.25))/4)
 
-func reset_shader():
+func set_shader_frame() -> void:
+	frames_shader = Engine.get_frames_drawn()
+
+func reset_shader() -> void:
 	$Sprite2D.material.set_shader_parameter("progress", 0)
+
+func set_shield_shader() -> void:
+	$Sprite2D.material.set_shader_parameter("color", Vector3(0,0,0.5))
+
+func set_dj_shader() -> void:
+	$Sprite2D.material.set_shader_parameter("color", Vector4(0.3,1,0.3,1))
 
 
 # Timers
-func _on_arrow_cooldown_timeout():
+func _on_arrow_cooldown_timeout() -> void:
 	can_shoot = true
 
-func _on_hit_shader_timeout():
+func _on_hit_shader_timeout() -> void:
 	reset_shader()
 
-func _on_double_jump_stop_timeout():
+func _on_double_jump_stop_timeout() -> void:
 	double_jump = false
 
-func _on_jump_cooldown_timeout():
+func _on_jump_cooldown_timeout() -> void:
 	jump_timer = false

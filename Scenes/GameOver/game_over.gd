@@ -5,5 +5,5 @@ var winner: String:
 		winner = value
 		%RichTextLabel.text = "[center]%s[/center]" % value
 
-func _on_button_pressed():
+func _on_button_pressed() -> void:
 	get_tree().quit()
