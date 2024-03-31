@@ -6,6 +6,7 @@ const JUMP_VELOCITY = -600.0
 
 # Signals
 signal arrow(pos, player1, power)
+signal player_has_died(is_p1)
 
 # Exports
 @export var is_player1: bool = true
@@ -151,6 +152,7 @@ func _on_animation_player_animation_finished(anim_name):
 		dead = true
 		dying = false
 		$Sprite2D.frame = 13
+		player_has_died.emit(is_player1)
 
 
 # Shooting
@@ -209,11 +211,8 @@ func update_shield(is_p1):
 		shield = Globals.shield_p2
 
 func set_shield_shader():
-	$Sprite2D.material.set_shader_parameter("color", Vector4(0,0.5,1,1))
-	$Sprite2D.material.set_shader_parameter("progress", 0.5)
-	#var tween = get_tree().create_tween()
-	#tween.tween_property($Sprite2D, "progress", 0.5, 0.2)
-	#tween.tween_property($Sprite2D, "progress", 0.5, 0.2)
+	$Sprite2D.material.set_shader_parameter("color", Vector3(0,0,0.5))
+	$Sprite2D.material.set_shader_parameter("progress", 0.3)
 
 func set_dj_shader():
 	$Sprite2D.material.set_shader_parameter("progress", 0.5)

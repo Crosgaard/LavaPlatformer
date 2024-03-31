@@ -70,7 +70,7 @@ _data = {
 "animate": SubResource("Animation_8ac63")
 }
 
-[node name="Item" type="Area2D"]
+[node name="Item" type="Area2D" groups=["Item"]]
 collision_layer = 8
 script = ExtResource("1_mdsi0")
 

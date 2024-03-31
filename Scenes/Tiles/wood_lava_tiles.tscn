@@ -17,6 +17,7 @@ polygon = PackedVector2Array(-63, -16, 63, -16, 63, 16, -63, 16)
 [node name="WoodLavaTiles" instance=ExtResource("1_t4gor")]
 collision_mask = 21
 script = ExtResource("2_w2f4v")
+lava_range = 300
 
 [node name="Sprite2D" parent="." index="0"]
 texture = ExtResource("2_kr8b2")
@@ -33,11 +34,11 @@ texture = ExtResource("6_v6qx8")
 wait_time = 0.2
 
 [node name="Area2D" type="Area2D" parent="." index="4"]
+position = Vector2(2.08165e-12, 300)
 collision_layer = 32
 collision_mask = 17
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" index="0"]
-position = Vector2(0, 300)
 shape = SubResource("RectangleShape2D_c5mk7")
 
 [node name="LightOccluder2D" parent="." index="5"]
