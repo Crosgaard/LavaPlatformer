@@ -1,8 +1,16 @@
-[gd_scene load_steps=27 format=3 uid="uid://ckxv3a6l2cy4t"]
+[gd_scene load_steps=35 format=3 uid="uid://ckxv3a6l2cy4t"]
 
-[ext_resource type="Script" path="res://Scenes/Player/Player.gd" id="1_cpgfd"]
+[ext_resource type="Script" path="res://Scenes/Player/player_v2.gd" id="1_4xarc"]
 [ext_resource type="Texture2D" uid="uid://b0mh2dko1f8jp" path="res://Graphics/Player/Arcane archer/spritesheet.png" id="2_ea42c"]
 [ext_resource type="Shader" path="res://Scenes/Player/player.gdshader" id="2_w0pmb"]
+[ext_resource type="Script" path="res://Scenes/state_machine/state_machine.gd" id="4_jwf2l"]
+[ext_resource type="Script" path="res://Scenes/state_machine/states/idle.gd" id="5_6tgvx"]
+[ext_resource type="Script" path="res://Scenes/state_machine/states/move.gd" id="6_nh17y"]
+[ext_resource type="Script" path="res://Scenes/state_machine/states/jump.gd" id="7_pqtvg"]
+[ext_resource type="Script" path="res://Scenes/state_machine/states/fall.gd" id="8_1doyf"]
+[ext_resource type="Script" path="res://Scenes/state_machine/states/shoot.gd" id="9_dit3c"]
+[ext_resource type="Script" path="res://Scenes/state_machine/states/die.gd" id="10_rakbn"]
+[ext_resource type="Script" path="res://Scenes/Player/player_move_component.gd" id="11_f23dv"]
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_8lb45"]
 polygon = PackedVector2Array(-64, -63, 64, -63, 64, 62, -64, 62)
@@ -806,9 +814,12 @@ _data = {
 "start_jump_right": SubResource("Animation_fp2jh")
 }
 
-[node name="Player" type="CharacterBody2D" groups=["Player"]]
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("jump_cooldown", "shoot_cooldown", "movement_animations") groups=["Player"]]
 collision_mask = 63
-script = ExtResource("1_cpgfd")
+script = ExtResource("1_4xarc")
+jump_cooldown = NodePath("Timers/JumpCooldown")
+shoot_cooldown = NodePath("Timers/ArrowCooldown")
+movement_animations = NodePath("AnimationPlayer")
 
 [node name="LightOccluder2D" type="LightOccluder2D" parent="."]
 visible = false
@@ -859,6 +870,53 @@ position = Vector2(83, -22)
 
 [node name="ASPfalse" type="Marker2D" parent="ArrowStartPositions"]
 position = Vector2(-83, -22)
+
+[node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("starting_state")]
+script = ExtResource("4_jwf2l")
+starting_state = NodePath("Idle")
+
+[node name="Idle" type="Node" parent="StateMachine" node_paths=PackedStringArray("fall_state", "jump_state", "move_state", "shoot_state", "die_state")]
+script = ExtResource("5_6tgvx")
+fall_state = NodePath("../Fall")
+jump_state = NodePath("../Jump")
+move_state = NodePath("../Move")
+shoot_state = NodePath("../Shoot")
+die_state = NodePath("../Die")
+
+[node name="Move" type="Node" parent="StateMachine" node_paths=PackedStringArray("fall_state", "jump_state", "idle_state", "shoot_state", "die_state")]
+script = ExtResource("6_nh17y")
+fall_state = NodePath("../Fall")
+jump_state = NodePath("../Jump")
+idle_state = NodePath("../Idle")
+shoot_state = NodePath("../Shoot")
+die_state = NodePath("../Die")
+
+[node name="Jump" type="Node" parent="StateMachine" node_paths=PackedStringArray("fall_state", "idle_state", "move_state", "shoot_state", "die_state")]
+script = ExtResource("7_pqtvg")
+fall_state = NodePath("../Fall")
+idle_state = NodePath("../Idle")
+move_state = NodePath("../Move")
+shoot_state = NodePath("../Shoot")
+die_state = NodePath("../Die")
+
+[node name="Fall" type="Node" parent="StateMachine" node_paths=PackedStringArray("move_state", "idle_state", "die_state")]
+script = ExtResource("8_1doyf")
+move_state = NodePath("../Move")
+idle_state = NodePath("../Idle")
+die_state = NodePath("../Die")
+
+[node name="Shoot" type="Node" parent="StateMachine" node_paths=PackedStringArray("jump_state", "idle_state", "shoot_state", "die_state")]
+script = ExtResource("9_dit3c")
+jump_state = NodePath("../Jump")
+idle_state = NodePath("../Idle")
+shoot_state = NodePath(".")
+die_state = NodePath("../Die")
+
+[node name="Die" type="Node" parent="StateMachine"]
+script = ExtResource("10_rakbn")
+
+[node name="PlayerMoveComponent" type="Node" parent="."]
+script = ExtResource("11_f23dv")
 
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]
 [connection signal="timeout" from="Timers/ArrowCooldown" to="." method="_on_arrow_cooldown_timeout"]

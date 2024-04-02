@@ -1,4 +1,4 @@
-extends "res://Scenes/Tiles/special_tiles.gd"
+extends SpecialTiles
 
 @export var lava_range: int = 300
 

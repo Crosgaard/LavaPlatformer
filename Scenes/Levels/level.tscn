@@ -1871,7 +1871,7 @@ _data = {
 }
 point_count = 2
 
-[sub_resource type="Curve2D" id="Curve2D_2biy5"]
+[sub_resource type="Curve2D" id="Curve2D_843x2"]
 resource_local_to_scene = true
 _data = {
 "points": PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -900, 2.08165e-12)
@@ -1979,7 +1979,7 @@ curve = SubResource("Curve2D_4k4g6")
 
 [node name="MovingPlatform3" parent="Background/SpecialTilesNode" instance=ExtResource("4_cueeu")]
 position = Vector2(1757.9, -118.421)
-curve = SubResource("Curve2D_2biy5")
+curve = SubResource("Curve2D_843x2")
 
 [node name="WoodLavaTiles" parent="Background/SpecialTilesNode" instance=ExtResource("5_8kcw4")]
 position = Vector2(-1957.89, 647.368)
@@ -2167,18 +2167,13 @@ metadata/_edit_lock_ = true
 
 [node name="Player1" parent="Players" instance=ExtResource("2_638mx")]
 position = Vector2(-2490, 1356.67)
+is_p1 = true
 
 [node name="Player2" parent="Players" instance=ExtResource("2_638mx")]
 position = Vector2(2483.33, 1356.67)
-is_player1 = false
 
 [node name="Camera2D" type="Camera2D" parent="."]
 metadata/_edit_lock_ = true
-
-[node name="StartLava" type="Timer" parent="."]
-wait_time = 4.0
-one_shot = true
-autostart = true
 
 [node name="UI" parent="." instance=ExtResource("11_kiykd")]
 
@@ -2190,4 +2185,3 @@ visible = false
 [connection signal="player_has_died" from="Players/Player1" to="." method="_on_player_has_died"]
 [connection signal="arrow" from="Players/Player2" to="." method="_on_player_arrow"]
 [connection signal="player_has_died" from="Players/Player2" to="." method="_on_player_has_died"]
-[connection signal="timeout" from="StartLava" to="." method="_on_start_lava_timeout"]

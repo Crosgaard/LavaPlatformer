@@ -16,11 +16,6 @@ func _on_player_arrow(pos: Vector2, is_p1: bool, power: bool) -> void:
 		arrow.rotation_degrees = 180
 	$Projectiles.add_child(arrow)
 
-func _on_start_lava_timeout() -> void:
-	pass
-	# var tween = get_tree().create_tween()
-	#tween.tween_property($Lava, "position", Vector2(0,-600), 80)
-
 func _on_area_2d_body_entered(body: CharacterBody2D) -> void:
 	if body is Player:
 		player_won("PLAYER 1" if body.is_player1 else "PLAYER 2")

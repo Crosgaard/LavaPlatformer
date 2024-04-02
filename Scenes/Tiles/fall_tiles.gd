@@ -1,4 +1,4 @@
-extends "res://Scenes/Tiles/special_tiles.gd"
+extends SpecialTiles
 
 @export var acc: float = 0.2
 @export var range: float = 200.0

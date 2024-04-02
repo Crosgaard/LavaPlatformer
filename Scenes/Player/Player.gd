@@ -62,7 +62,6 @@ var rapid_fire_current: int = 0
 # Objects
 var prev_look_dir: String = ""
 var look_dir: String
-var prev_collisions: Array
 
 # Physic
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
@@ -107,7 +106,8 @@ func _physics_process(delta: float) -> void:
 			velocity.y = JUMP_VELOCITY
 			start_jump = true
 			jump_count += 1
-			if prev_look_dir == "": prev_look_dir = look_dir
+			if prev_look_dir == "": 
+				prev_look_dir = look_dir
 			jump_timer = true
 
 		var direction: float = Input.get_axis("left" + str(is_player1), "right" + str(is_player1))
