@@ -13,11 +13,11 @@ var parent: CharacterBody2D
 var is_p1: bool
 var dead: bool
 var player_dead_con: String
+var is_p1_str: String
 
-@onready var is_p1_str: String = str(is_p1)
-
-func ready() -> void:
+func ready_() -> void:
 	Globals.connect(player_dead_con, player_dead)
+	is_p1_str = str(is_p1)
 
 func enter() -> void:
 	pass
@@ -54,4 +54,4 @@ func can_jump() -> bool:
 	return parent.jump_count < parent.max_jump_count and not parent.jump_timer
 
 func get_shoot(shoot: String) -> bool:
-	return move_component.wants_shoot(shoot)
+	return move_component.wants_shoot(shoot) and not parent.shoot_timer

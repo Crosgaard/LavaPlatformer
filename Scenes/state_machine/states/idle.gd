@@ -13,7 +13,7 @@ func enter() -> void:
 	animations.play("idle_" + dir)
 
 func process_input(event: InputEvent) -> State:
-	if get_shoot("shoot" + is_p1_str) and parent.is_on_floor() and parent.can_shoot:
+	if get_shoot("shoot" + is_p1_str) and parent.is_on_floor():
 		return shoot_state
 	if get_jump("jump" + is_p1_str) and can_jump():
 		return jump_state

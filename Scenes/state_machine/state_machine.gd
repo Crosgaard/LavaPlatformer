@@ -17,6 +17,7 @@ func init(
 		child.move_component = move_component
 		child.is_p1 = is_p1
 		child.player_dead_con = player_dead_con
+		child.ready_()
 
 	change_state(starting_state)
 

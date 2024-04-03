@@ -58,7 +58,7 @@ func _on_animation_finsihed(anim_name: String) -> void:
 	#state_machine.on_animation_finished(anim_name)
 	pass
 
-func _on_animation_player_animation_finsihed(anim_name: String) -> void:
+func _on_animation_player_animation_finished(anim_name: String) -> void:
 	state_machine.on_animation_finished(anim_name)
 
 func _on_jump_cooldown_finish() -> void:
