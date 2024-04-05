@@ -1,4 +1,4 @@
-class_name Player extends CharacterBody2D
+extends CharacterBody2D
 
 # Signals
 signal arrow(pos: Vector2, is_p1: bool, power: bool)

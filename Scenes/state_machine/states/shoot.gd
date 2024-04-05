@@ -12,7 +12,8 @@ func enter() -> void:
 	parent.velocity.x = move_toward(parent.velocity.x, 0, move_speed)
 	shooting = true
 
-func frame_process(delta: float) -> State:
+func process_frame(delta: float) -> State:
+	print(str(is_p1) + str(shooting) + str(finish_shooting))
 	if dead:
 		return die_state
 	
@@ -35,6 +36,7 @@ func frame_process(delta: float) -> State:
 				parent.rapid_fire = false
 				parent.rapid_fire_current = 0
 		parent.shoot_cooldown.start()
+		
 		return idle_state
 	return null
 
@@ -51,6 +53,7 @@ func on_animation_finished(anim_name: String) -> void:
 	if anim_name == "shoot_right" or anim_name == "shoot_left":
 		shooting = false
 		shoot()
+		
 	
-	elif anim_name == "shoot_right_finish" or anim_name == "shoot_right_finish":
+	elif anim_name == "shoot_right_finish" or anim_name == "shoot_left_finish":
 		finish_shooting = false

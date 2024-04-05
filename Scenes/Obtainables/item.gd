@@ -38,7 +38,7 @@ func _ready() -> void:
 
 func _on_body_entered(body: CharacterBody2D) -> void:
 	if body is Player:
-		var is_p1 = body.is_player1
+		var is_p1 = body.is_p1
 		
 		match type:
 			"health":

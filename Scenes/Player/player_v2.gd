@@ -1,4 +1,4 @@
-class_name Player2 extends CharacterBody2D
+class_name Player extends CharacterBody2D
 
 signal arrow(pos: Vector2, is_p1: bool, power: bool)
 signal player_has_died(is_p1: bool)
@@ -30,13 +30,14 @@ var rapid_fire: bool = false
 var rapid_fire_max: int = 3
 var rapid_fire_current: int = 0
 
+var arrow_marker: Marker2D
 var arrow_pos: Vector2
 
 @onready var state_machine: Node = $StateMachine
 @onready var player_move_component = $PlayerMoveComponent
 
 func _ready() -> void:
-	arrow_pos = $ArrowStartPositions/ASPtrue.global_position if is_p1 else $ArrowStartPositions/ASPfalse.global_position
+	arrow_marker = $ArrowStartPositions/ASPtrue if is_p1 else $ArrowStartPositions/ASPfalse
 	
 	var player_dead_con: String
 	player_dead_con = "player1_dead" if is_p1 else "player2_dead"
@@ -52,13 +53,10 @@ func _physics_process(delta: float) -> void:
 	state_machine.process_physics(delta)
 
 func _process(delta: float) -> void:
+	arrow_pos = arrow_marker.global_position
 	state_machine.process_frame(delta)
 
 func _on_animation_finsihed(anim_name: String) -> void:
-	#state_machine.on_animation_finished(anim_name)
-	pass
-
-func _on_animation_player_animation_finished(anim_name: String) -> void:
 	state_machine.on_animation_finished(anim_name)
 
 func _on_jump_cooldown_finish() -> void:

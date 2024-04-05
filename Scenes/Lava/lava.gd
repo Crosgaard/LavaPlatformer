@@ -8,8 +8,8 @@ enum LavaState {
 
 @export_category("Node References")
 @export var collision: CollisionShape2D
-@export var player1: Player2
-@export var player2: Player2
+@export var player1: Player
+@export var player2: Player
 @export_category("Timers")
 @export var start_wait_timer: float = 2.0
 @export var wait_timer: float = 5.0

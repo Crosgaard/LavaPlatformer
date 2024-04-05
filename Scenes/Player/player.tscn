@@ -899,11 +899,12 @@ move_state = NodePath("../Move")
 shoot_state = NodePath("../Shoot")
 die_state = NodePath("../Die")
 
-[node name="Fall" type="Node" parent="StateMachine" node_paths=PackedStringArray("move_state", "idle_state", "die_state")]
+[node name="Fall" type="Node" parent="StateMachine" node_paths=PackedStringArray("move_state", "idle_state", "die_state", "jump_state")]
 script = ExtResource("8_1doyf")
 move_state = NodePath("../Move")
 idle_state = NodePath("../Idle")
 die_state = NodePath("../Die")
+jump_state = NodePath("../Jump")
 
 [node name="Shoot" type="Node" parent="StateMachine" node_paths=PackedStringArray("jump_state", "idle_state", "shoot_state", "die_state")]
 script = ExtResource("9_dit3c")
@@ -918,8 +919,5 @@ script = ExtResource("10_rakbn")
 [node name="PlayerMoveComponent" type="Node" parent="."]
 script = ExtResource("11_f23dv")
 
-[connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]
-[connection signal="timeout" from="Timers/ArrowCooldown" to="." method="_on_arrow_cooldown_timeout"]
 [connection signal="timeout" from="Timers/HitShader" to="." method="_on_hit_shader_timeout"]
 [connection signal="timeout" from="Timers/DoubleJumpStop" to="." method="_on_double_jump_stop_timeout"]
-[connection signal="timeout" from="Timers/JumpCooldown" to="." method="_on_jump_cooldown_timeout"]
