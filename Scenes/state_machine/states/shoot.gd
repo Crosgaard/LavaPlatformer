@@ -40,7 +40,7 @@ func process_frame(delta: float) -> State:
 	return null
 
 func shoot() -> void:
-	parent.arrow.emit(parent.arrow_pos, is_p1, parent.power, parent.push_back)
+	parent.arrow.emit(parent.arrow_pos, is_p1, parent.power)
 	
 	shooting = false
 	finish_shooting = true
