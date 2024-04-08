@@ -6,6 +6,7 @@ var available_options = [
 	"shield", 
 	"double_jump", 
 	"health",
+	"push_back",
 ]
 
 var type = available_options[randi() % len(available_options)]
@@ -15,7 +16,7 @@ var red  = Color(1., 0.2, 0.4)
 var yellow = Color(1., 1., 0.2)
 var purple = Color(0.6, 0.4, 1.)
 var blue = Color(0.1, 0.75, 1.)
-var green= Color(0.5, 1., 0.6)
+var green = Color(0.5, 1., 0.6)
 
 func _ready() -> void:
 	match type:

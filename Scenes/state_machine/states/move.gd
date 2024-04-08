@@ -10,7 +10,7 @@ func process_physics(delta: float) -> State:
 	if get_shoot("shoot" + is_p1_str) and parent.is_on_floor():
 		return shoot_state
 	
-	if get_jump("jump" + is_p1_str) and can_jump():
+	if get_jump("jump" + is_p1_str) and parent.can_jump():
 		return jump_state
 
 	parent.velocity.y += gravity * delta

@@ -15,7 +15,7 @@ func enter() -> void:
 func process_input(event: InputEvent) -> State:
 	if get_shoot("shoot" + is_p1_str) and parent.is_on_floor():
 		return shoot_state
-	if get_jump("jump" + is_p1_str) and can_jump():
+	if get_jump("jump" + is_p1_str) and parent.can_jump():
 		return jump_state
 	if get_movement_input("left" + is_p1_str, "right" + is_p1_str) != 0.0:
 		return move_state

@@ -3,6 +3,10 @@ extends Node
 @export var starting_state: State
 
 var current_state: State
+var prev_state: State:
+	set(value):
+		prev_state = value
+		current_state.prev_state = value
 
 func init(
 		parent: CharacterBody2D, 
@@ -22,12 +26,16 @@ func init(
 	change_state(starting_state)
 
 func change_state(new_state: State) -> void:
+	var this_state: State
 	if current_state:
+		this_state = current_state
 		current_state.exit()
-
-	current_state = new_state
-	current_state.enter()
 	
+	current_state = new_state
+	if this_state:
+		prev_state = this_state
+	current_state.enter()
+
 func process_physics(delta: float) -> void:
 	var new_state = current_state.process_physics(delta)
 	if new_state:

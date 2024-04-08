@@ -12,6 +12,7 @@ var is_p1: bool
 var dead: bool
 var player_dead_con: String
 var is_p1_str: String
+var prev_state: State
 
 func ready_() -> void:
 	Globals.connect(player_dead_con, player_dead)
@@ -45,9 +46,6 @@ func set_parent_look_dir(movement: float) -> void:
 		parent.look_dir = "right"
 	else:
 		parent.look_dir = parent.prev_look_dir
-	print(movement)
-	print(parent.look_dir)
-	print(parent.prev_look_dir)
 
 func set_parent_prev_look_dir() -> void:
 	parent.prev_look_dir = parent.look_dir
@@ -57,9 +55,6 @@ func get_movement_input(left: String, right: String) -> float:
 
 func get_jump(jump: String) -> bool:
 	return move_component.wants_jump(jump)
-
-func can_jump() -> bool:
-	return parent.jump_count < parent.max_jump_count and not parent.jump_timer
 
 func get_shoot(shoot: String) -> bool:
 	return move_component.wants_shoot(shoot) and not parent.shoot_timer

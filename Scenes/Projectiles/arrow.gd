@@ -13,7 +13,7 @@ func _physics_process(delta: float) -> void:
 	position += direction * speed * delta 
 
 func _on_body_entered(body: CharacterBody2D) -> void:
-	if "hit" in body and not (body.dying or body.dead):
+	if "hit" in body:
 		body.hit(dmg + dmg * int(power))
 	queue_free()
 

@@ -1871,7 +1871,7 @@ _data = {
 }
 point_count = 2
 
-[sub_resource type="Curve2D" id="Curve2D_754dd"]
+[sub_resource type="Curve2D" id="Curve2D_jouyb"]
 resource_local_to_scene = true
 _data = {
 "points": PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -900, 2.08165e-12)
@@ -1979,7 +1979,7 @@ curve = SubResource("Curve2D_4k4g6")
 
 [node name="MovingPlatform3" parent="Background/SpecialTilesNode" instance=ExtResource("4_cueeu")]
 position = Vector2(1757.9, -118.421)
-curve = SubResource("Curve2D_754dd")
+curve = SubResource("Curve2D_jouyb")
 
 [node name="WoodLavaTiles" parent="Background/SpecialTilesNode" instance=ExtResource("5_8kcw4")]
 position = Vector2(-1957.89, 647.368)
@@ -2097,8 +2097,9 @@ material = ExtResource("4_6afwc")
 position = Vector2(2.08165e-12, 533)
 player1 = NodePath("../Players/Player1")
 player2 = NodePath("../Players/Player2")
+wait_timer = 1.0
 slow_seconds = 180
-fast_seconds = 60
+fast_seconds = 120
 metadata/_edit_group_ = true
 metadata/_edit_lock_ = true
 

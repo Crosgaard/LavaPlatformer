@@ -8,6 +8,7 @@ extends State
 @export var jump_buffer: float = 0.1
 @export var coyote_time: float = 0.05
 
+var has_sat_jump: bool = false
 var jump_buffer_timer: float = 0.0
 var coyote_timer: float = 0.0
 
@@ -15,7 +16,13 @@ func enter() -> void:
 	var dir: String = "right" if is_p1 else "left"
 	animations.play("fall_" + dir)
 	jump_buffer_timer = 0.0
-	coyote_timer = coyote_time
+	
+	if prev_state != jump_state:
+		coyote_timer = coyote_time
+	else:
+		coyote_timer = 0
+		parent.set_jump()
+		has_sat_jump = true
 
 func process_physics(delta: float) -> State:
 	parent.velocity.y += gravity * delta
@@ -27,16 +34,15 @@ func process_physics(delta: float) -> State:
 	
 	if movement != 0:
 		animations.play("fall_" + parent.look_dir)
-
+	
 	parent.velocity.x = movement
 	parent.move_and_slide()
 	
 	if get_jump("jump" + is_p1_str): 
-		if can_jump() or coyote_timer > 0:
+		if parent.can_jump():
 			return jump_state
 		else:
 			jump_buffer_timer = jump_buffer
-			print(jump_buffer_timer)
 	
 	if parent.is_on_floor():
 		parent.jump_count = 0
@@ -57,5 +63,8 @@ func process_frame(delta: float) -> State:
 	
 	if coyote_timer > 0:
 		coyote_timer -= delta
+	elif not has_sat_jump:
+		parent.set_jump()
+		has_sat_jump = true
 	
 	return null

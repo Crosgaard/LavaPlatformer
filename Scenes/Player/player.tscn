@@ -1,6 +1,6 @@
 [gd_scene load_steps=35 format=3 uid="uid://ckxv3a6l2cy4t"]
 
-[ext_resource type="Script" path="res://Scenes/Player/player_v2.gd" id="1_4xarc"]
+[ext_resource type="Script" path="res://Scenes/Player/player.gd" id="1_ug3md"]
 [ext_resource type="Texture2D" uid="uid://b0mh2dko1f8jp" path="res://Graphics/Player/Arcane archer/spritesheet.png" id="2_ea42c"]
 [ext_resource type="Shader" path="res://Scenes/Player/player.gdshader" id="2_w0pmb"]
 [ext_resource type="Script" path="res://Scenes/state_machine/state_machine.gd" id="4_jwf2l"]
@@ -816,7 +816,7 @@ _data = {
 
 [node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("jump_cooldown", "shoot_cooldown", "movement_animations") groups=["Player"]]
 collision_mask = 63
-script = ExtResource("1_4xarc")
+script = ExtResource("1_ug3md")
 jump_cooldown = NodePath("Timers/JumpCooldown")
 shoot_cooldown = NodePath("Timers/ArrowCooldown")
 movement_animations = NodePath("AnimationPlayer")
@@ -890,7 +890,6 @@ jump_state = NodePath("../Jump")
 idle_state = NodePath("../Idle")
 shoot_state = NodePath("../Shoot")
 die_state = NodePath("../Die")
-move_speed = null
 
 [node name="Jump" type="Node" parent="StateMachine" node_paths=PackedStringArray("fall_state", "idle_state", "move_state", "shoot_state", "die_state")]
 script = ExtResource("7_pqtvg")

@@ -25,6 +25,9 @@ func process_physics(delta: float) -> State:
 	if dead:
 		return die_state
 	
+	if get_jump("jump" + is_p1_str) and parent.can_jump():
+		return jump_state
+	
 	if parent.velocity.y > 0:
 		return fall_state
 	
@@ -40,7 +43,7 @@ func process_physics(delta: float) -> State:
 	else:
 		animations.play("jump_" + parent.look_dir)
 		if get_jump("jump" + is_p1_str): 
-			if can_jump():
+			if parent.can_jump():
 				return jump_state
 			else:
 				jump_buffer_timer = jump_buffer
