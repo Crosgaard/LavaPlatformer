@@ -39,7 +39,17 @@ func player_dead():
 	dead = true
 
 func set_parent_look_dir(movement: float) -> void:
-	parent.look_dir = "left" if movement < 0 else "right" if movement > 0 else parent.prev_look_dir
+	if movement < 0:
+		parent.look_dir = "left"
+	elif movement > 0:
+		parent.look_dir = "right"
+	else:
+		parent.look_dir = parent.prev_look_dir
+	print(movement)
+	print(parent.look_dir)
+	print(parent.prev_look_dir)
+
+func set_parent_prev_look_dir() -> void:
 	parent.prev_look_dir = parent.look_dir
 
 func get_movement_input(left: String, right: String) -> float:

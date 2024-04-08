@@ -13,7 +13,6 @@ func enter() -> void:
 	shooting = true
 
 func process_frame(delta: float) -> State:
-	print(str(is_p1) + str(shooting) + str(finish_shooting))
 	if dead:
 		return die_state
 	

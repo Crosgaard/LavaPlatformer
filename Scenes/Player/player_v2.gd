@@ -7,7 +7,6 @@ const SPEED: float = 250.0
 
 @export_category("Basics")
 @export var is_p1: bool
-@export var dead_frame: int = 13
 @export_category("Node references")
 @export var jump_cooldown: Timer
 @export var shoot_cooldown: Timer
@@ -40,7 +39,13 @@ func _ready() -> void:
 	arrow_marker = $ArrowStartPositions/ASPtrue if is_p1 else $ArrowStartPositions/ASPfalse
 	
 	var player_dead_con: String
-	player_dead_con = "player1_dead" if is_p1 else "player2_dead"
+	if is_p1:
+		player_dead_con = "player1_dead"
+		prev_look_dir = "right"
+	else:
+		player_dead_con = "player2_dead"
+		prev_look_dir = "left"
+	
 	movement_animations.animation_finished.connect(_on_animation_finsihed)
 	shoot_cooldown.timeout.connect(_on_shoot_cooldown_finish)
 	jump_cooldown.timeout.connect(_on_jump_cooldown_finish)
@@ -55,6 +60,12 @@ func _physics_process(delta: float) -> void:
 func _process(delta: float) -> void:
 	arrow_pos = arrow_marker.global_position
 	state_machine.process_frame(delta)
+
+func die() -> void:
+	if is_p1:
+		Globals.player1_dead.emit()
+	else:
+		Globals.player2_dead.emit()
 
 func _on_animation_finsihed(anim_name: String) -> void:
 	state_machine.on_animation_finished(anim_name)

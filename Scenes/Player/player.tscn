@@ -890,6 +890,7 @@ jump_state = NodePath("../Jump")
 idle_state = NodePath("../Idle")
 shoot_state = NodePath("../Shoot")
 die_state = NodePath("../Die")
+move_speed = null
 
 [node name="Jump" type="Node" parent="StateMachine" node_paths=PackedStringArray("fall_state", "idle_state", "move_state", "shoot_state", "die_state")]
 script = ExtResource("7_pqtvg")

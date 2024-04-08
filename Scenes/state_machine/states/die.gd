@@ -21,5 +21,4 @@ func process_frame(delta: float) -> State:
 func on_animation_finished(anim_name: String) -> void:
 	if anim_name == "die_" + prev_look_dir:
 		dying = false
-		animations.frame = parent.dead_frame
 		parent.player_has_died.emit(is_p1)

@@ -17,6 +17,7 @@ func process_physics(delta: float) -> State:
 
 	var movement = get_movement_input("left" + is_p1_str, "right" + is_p1_str) * move_speed
 	set_parent_look_dir(movement)
+	set_parent_prev_look_dir()
 	
 	if movement == 0:
 		return idle_state
